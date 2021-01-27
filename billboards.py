@@ -1,4 +1,6 @@
 #!/usr/bin/python2.7
+import os
+
 import billboard
 
 from lyricsgenius import Genius
@@ -65,16 +67,18 @@ def get_n_most_frequent_entries(charts, n):
 def main():
     genius = Genius('QfcNFORWYYHMb2l48a95UsfzXqNTjnbJZkn3TZZ6HTquOw58d7JQdERD8VnOa71y')
 
-    charts = get_charts('r-b-hip-hop-songs',dates = get_dates_by_month(2000))
-    top_songs = get_n_most_frequent_entries(charts, 10)
-        
-    for song in top_songs:
-        s = song.split(',')
-        track = genius.search_song(s[0],s[1])
-        #print("Track = ", track)
+    years = ['2000', '2001', '2002', '2003', '2004']
+    for x in range(len(years)):
+        charts = get_charts('r-b-hip-hop-songs',dates = get_dates_by_month(int(years[x])))
+        top_songs = get_n_most_frequent_entries(charts, 10)
 
-        with open(track.title, "w") as text_file:
-            print(track.lyrics, file=text_file)
+        for song in top_songs:
+            s = song.split(',')
+            track = genius.search_song(s[0],s[1])
+            filename = 'songs/' + years[x] + '/' + track.title + '.txt'
+            os.makedirs(os.path.dirname(filename), exist_ok = True)
+            with open(filename, "w") as text_file:
+                print(track.lyrics, file=text_file)
 
 
 if __name__ == "__main__":
