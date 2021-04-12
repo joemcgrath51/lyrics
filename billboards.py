@@ -1,19 +1,16 @@
-#!/usr/bin/python2.7
-import os
-
-from pandas import unique
-
+#!/usr/bin/python3
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import helpers
 
-
 def main():
-    h = []
-    years = ['2000', '2001', '2002', '2003', '2004']
+
+    years = ['2018', '2019' , '2020']
     genre = 'r-b-hip-hop-songs'
     genius = 'QfcNFORWYYHMb2l48a95UsfzXqNTjnbJZkn3TZZ6HTquOw58d7JQdERD8VnOa71y'
-    for x in range(len(years)):
-        h.append(helpers.search_data(genius, genre, years[x]))
-        print(h[x])
+    h = helpers.search_data(genius, genre, years)
+
+    print(helpers.count(h))
 
 
 if __name__ == "__main__":

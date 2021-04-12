@@ -5,6 +5,8 @@ import lyricsgenius as genius
 import pandas as pd
 import string 
 
+from sklearn.feature_extraction.text import CountVectorizer
+
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer 
@@ -13,7 +15,7 @@ from pandas import unique
 
 import billboard
 
-nltk.download('wordnet')
+#nltk.download('wordnet')
 
 def search_data(access_token,genre,year):
     """
@@ -33,29 +35,35 @@ def search_data(access_token,genre,year):
     words =[]
 
     api = genius.Genius(access_token)
-    charts = get_charts(genre, dates=get_dates_by_month(int(year)))
-    top_songs = get_n_most_frequent_entries(charts, 3)
+    for x in range(len(year)):
+        charts = get_charts(genre, dates=get_dates_by_month(int(year[x])))
+        top_songs = get_n_most_frequent_entries(charts, 5)
 
-    for song in top_songs:
-        s = song.split(',')
-        track = api.search_song(s[0],s[1])
-        if track is not None:
-            list_lyrics.append(track.lyrics)
-            list_title.append(track.title)
-            list_artist.append(track.artist)
-            list_album.append(track.album)
-            list_year.append(track.year)
+        for song in top_songs:
+            s = song.split(',')
+            if "Featuring" in s[1]:
+                s[1] = s[1].split("Featuring")
+
+            track = api.search_song(s[0], s[1][0])
+            if track is not None:
+                list_lyrics.append(track.lyrics)
+                list_title.append(track.title)
+                list_artist.append(track.artist)
+                list_album.append(track.album)
+                list_year.append(year[x])
 
     df = pd.DataFrame({'artist':list_artist,'title':list_title,'album':list_album,
-                        'date':list_year,'lyric':list_lyrics})
+                        'year':list_year,'lyric':list_lyrics})
     df = clean_lyrics(df, 'lyric')
     df = df.reset_index(drop=True)
 
     for word in df['lyric'].tolist():
-        words.append(unique(lyrics_to_words(word).split()))
+        if not str(word).isdigit():
+            words.append(unique(lyrics_to_words(word).split()))
 
     df['words'] = words
     return df
+
 
 def clean_lyrics(df,column):
     """
@@ -74,6 +82,7 @@ def clean_lyrics(df,column):
 
     return df
 
+
 def lyrics_to_words(document):
     """
     This function splits the text of lyrics to  single words, removing stopwords and doing the lemmatization to each word
@@ -88,6 +97,7 @@ def lyrics_to_words(document):
     punctuationremoval = ''.join(ch for ch in stopwordremoval if ch not in exclude)
     normalized = " ".join(lemma.lemmatize(word) for word in punctuationremoval.split())
     return normalized
+
 
 def create_decades(df):
     """
@@ -178,3 +188,30 @@ def get_n_most_frequent_entries(charts, n):
     l.reverse()
 
     return [title for title, freq in l[:n]]
+
+
+def count(df):
+    set_words = []
+    set_years = []
+    for i in df.index:
+        for word in df['words'].iloc[i]:
+            set_words.append(word)
+            set_years.append(df['year'].iloc[i])
+
+    print(set_years)
+    words_df = pd.DataFrame({'words': set_words,'year':set_years})
+    # count the frequency of each word that aren't on the stop_words
+    cv = CountVectorizer() # Create a dataframe called data_cv to store the the number of times the word was used in  a lyric based their decade
+    text_cv = cv.fit_transform(words_df['words'].iloc[:])
+
+
+    data_cv = pd.DataFrame(text_cv.toarray(), columns=cv.get_feature_names())
+    data_cv['year'] = words_df['year']
+
+    vect_words = data_cv.groupby('year').sum().T
+    vect_words = vect_words.reset_index(level=0).rename(columns={'index': 'words'})
+    vect_words = vect_words.rename_axis(columns='')
+
+    vect_words.to_csv('words.csv', index=False)
+    vect_words = vect_words[['words', '2018', '2019']]
+    return vect_words
