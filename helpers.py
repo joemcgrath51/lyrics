@@ -1,9 +1,11 @@
 from datetime import date, timedelta, datetime
-import os
+from wordcloud import WordCloud
 
 import lyricsgenius as genius
 import pandas as pd
-import string 
+import string
+
+import matplotlib.pyplot as plt
 
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -32,34 +34,37 @@ def search_data(access_token,genre,year):
     list_artist = []
     list_album = []
     list_year = []
-    words =[]
+    words = []
 
-    api = genius.Genius(access_token)
-    for x in range(len(year)):
-        charts = get_charts(genre, dates=get_dates_by_month(int(year[x])))
-        top_songs = get_n_most_frequent_entries(charts, 5)
+    try:
+        api = genius.Genius(access_token)
+        for x in range(len(year)):
+            charts = get_charts(genre, dates=get_dates_by_month(int(year[x])))
+            top_songs = get_n_most_frequent_entries(charts, 100)
 
-        for song in top_songs:
-            s = song.split(',')
-            if "Featuring" in s[1]:
-                s[1] = s[1].split("Featuring")
-
-            track = api.search_song(s[0], s[1][0])
-            if track is not None:
-                list_lyrics.append(track.lyrics)
-                list_title.append(track.title)
-                list_artist.append(track.artist)
-                list_album.append(track.album)
-                list_year.append(year[x])
-
-    df = pd.DataFrame({'artist':list_artist,'title':list_title,'album':list_album,
-                        'year':list_year,'lyric':list_lyrics})
+            for song in top_songs:
+                if song is not None:
+                    s = song.split(',')
+                    if "Featuring" in s[1]:
+                        s[1] = s[1].split("Featuring")
+                    track = api.search_song(s[0], s[1][0])
+                    if track is not None:
+                        list_lyrics.append(track.lyrics)
+                        list_title.append(track.title)
+                        #list_artist.append(track.artist)
+                        #list_album.append(track.album)
+                        list_year.append(year[x])
+    except Exception as e:
+        print("Couldn't get song: " + str(e))
+    #df = pd.DataFrame({'artist':list_artist,'title':list_title,'album':list_album,
+                       # 'year':list_year,'lyric':list_lyrics})
+    df = pd.DataFrame({'year': list_year, 'title': list_title, 'lyric':list_lyrics})
     df = clean_lyrics(df, 'lyric')
     df = df.reset_index(drop=True)
 
     for word in df['lyric'].tolist():
         if not str(word).isdigit():
-            words.append(unique(lyrics_to_words(word).split()))
+            words.append(lyrics_to_words(word).split())
 
     df['words'] = words
     return df
@@ -195,15 +200,16 @@ def count(df):
     set_years = []
     for i in df.index:
         for word in df['words'].iloc[i]:
-            set_words.append(word)
-            set_years.append(df['year'].iloc[i])
+            if not(any(char.isdigit() for char in word)):
+                set_words.append(word)
+                set_years.append(df['year'].iloc[i])
 
-    print(set_years)
     words_df = pd.DataFrame({'words': set_words,'year':set_years})
     # count the frequency of each word that aren't on the stop_words
-    cv = CountVectorizer() # Create a dataframe called data_cv to store the the number of times the word was used in  a lyric based their decade
+    file = open('stopwords.txt', 'r')
+    stop_words = (file.read().replace("\n",',')).split(',')
+    cv = CountVectorizer(stop_words=stop_words) # Create a dataframe called data_cv to store the the number of times the word was used in  a lyric based their decade
     text_cv = cv.fit_transform(words_df['words'].iloc[:])
-
 
     data_cv = pd.DataFrame(text_cv.toarray(), columns=cv.get_feature_names())
     data_cv['year'] = words_df['year']
@@ -213,5 +219,21 @@ def count(df):
     vect_words = vect_words.rename_axis(columns='')
 
     vect_words.to_csv('words.csv', index=False)
-    vect_words = vect_words[['words', '2018', '2019']]
     return vect_words
+
+
+def plot_wordcloud(df, row, col):
+    wc = WordCloud(background_color="white", colormap="Dark2",
+                   max_font_size=100, random_state=15)
+    fig = plt.figure(figsize=(20, 10))
+
+    for index, value in enumerate(df.columns[1:]):
+        top_dict = dict(zip(df['words'].tolist(), df[value].tolist()))
+        wc.generate_from_frequencies(top_dict)
+        plt.subplot(row, col, index + 1)
+        plt.imshow(wc, interpolation="bilinear")
+        plt.axis("off")
+        plt.title(df.columns[index+1], fontsize=15)
+
+    plt.subplots_adjust(wspace=0.1, hspace=0.1)
+    plt.show()

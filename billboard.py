@@ -134,7 +134,7 @@ class ChartData:
     """
 
     def __init__(
-        self, name, date=None, year=None, fetch=True, max_retries=5, timeout=25
+        self, name, date=None, year=None, fetch=True, max_retries=15, timeout=25
     ):
         """Constructs a new ChartData instance.
 
@@ -156,7 +156,7 @@ class ChartData:
                 If False, the chart data can be populated at a later time
                 using the fetchEntries() method.
             max_retries: The max number of times to retry when requesting data
-                (default: 5).
+                (default: 15).
             timeout: The number of seconds to wait for a server response.
                 If None, no timeout is applied.
         """
@@ -491,13 +491,13 @@ class ChartData:
         self._parsePage(soup)
 
 
-def charts(year_end=False):
+def charts(year_end=True):
     """Gets a list of all Billboard charts from Billboard.com.
 
     Args:
         year_end: If True, will list Billboard's year-end charts.
     """
-    session = _get_session_with_retries(max_retries=5)
+    session = _get_session_with_retries(max_retries=15)
     url = "https://www.billboard.com/charts"
     if year_end:
         url += "/year-end"
