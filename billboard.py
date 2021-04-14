@@ -119,7 +119,6 @@ class YearEndChartEntry(ChartEntry):
         self.image = image
         self.rank = rank
 
-
 class ChartData:
     """Represents a particular Billboard chart for a particular date.
 

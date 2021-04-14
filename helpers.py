@@ -199,23 +199,24 @@ def count(df):
     set_words = []
     set_years = []
     for i in df.index:
-        for word in df['words'].iloc[i]:
+        for word in df['lyrics'].iloc[i]:
             if not(any(char.isdigit() for char in word)):
                 set_words.append(word)
                 set_years.append(df['year'].iloc[i])
 
-    words_df = pd.DataFrame({'words': set_words,'year':set_years})
+    words_df = pd.DataFrame({'lyrics': set_words,'year':set_years})
     # count the frequency of each word that aren't on the stop_words
     file = open('stopwords.txt', 'r')
     stop_words = (file.read().replace("\n",',')).split(',')
     cv = CountVectorizer(stop_words=stop_words) # Create a dataframe called data_cv to store the the number of times the word was used in  a lyric based their decade
-    text_cv = cv.fit_transform(words_df['words'].iloc[:])
+    print(words_df)
+    text_cv = cv.fit_transform(words_df['lyrics'].iloc[:])
 
     data_cv = pd.DataFrame(text_cv.toarray(), columns=cv.get_feature_names())
     data_cv['year'] = words_df['year']
 
     vect_words = data_cv.groupby('year').sum().T
-    vect_words = vect_words.reset_index(level=0).rename(columns={'index': 'words'})
+    vect_words = vect_words.reset_index(level=0).rename(columns={'index': 'lyrics'})
     vect_words = vect_words.rename_axis(columns='')
 
     vect_words.to_csv('words.csv', index=False)
