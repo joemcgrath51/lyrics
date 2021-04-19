@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import warnings
 import os
+from wordcloud import WordCloud
+
 import matplotlib.pyplot as plt
 
 
@@ -47,8 +49,32 @@ def main():
         except Exception as e:
             print(e)
     df = readFiles(directory, years)
+    #year2019 = df[0]['words']
+    #year2019 = year2019.tolist()
+    print(len(df[0]['words']))
+    for i in range(len(df)):
+        temp = []
+        for x in range(len(df[i]['words'])):
+            temp.append(','.join(df[0]['words'][x]).lower())
+        years.append(temp)
 
-    #temp = helpers.count(df)
+    print(years[2])
+    print("------------------------------------------------------------------------")
+    print(years[3])
+
+    plt.figure()
+    wc = []
+    for x in range(len(years) - 2):
+        j = x + 2
+        wc.append(WordCloud(background_color="white", max_font_size=100, collocations=True))
+        wc[x].generate(str(years[j]))
+        plt.subplot(1, 4, j).set_title("Topic #" + str(x))
+        plt.plot()
+        plt.imshow(wc[x], interpolation='bilInear')
+        plt.axis('off')
+    plt.suptitle("Year")
+    plt.show()
+        #temp = helpers.count(df)
 
     #helpers.plot_wordcloud(temp, 2, 2)
 
@@ -86,7 +112,6 @@ def readFiles(dir, year):
         df['words'] = words
         frames.append(df)
         del df
-    print(frames[0]['lyrics'])
     return frames
 
 

@@ -1,6 +1,8 @@
 from datetime import date, timedelta, datetime
 from wordcloud import WordCloud
 
+
+
 import lyricsgenius as genius
 import pandas as pd
 import string
@@ -195,36 +197,56 @@ def get_n_most_frequent_entries(charts, n):
     return [title for title, freq in l[:n]]
 
 
+
 def count(t):
     set_words = []
     set_years = []
-
     for i in range(len(t)):
+        #set_words = []
+        #set_years = []
         df = t[i]
         for x in df.index:
             for word in df['words'].iloc[x]:
                 if not(any(char.isdigit() for char in word)):
                     set_words.append(word)
                     set_years.append(df['year'].iloc[i])
-
-    print(len(set_words))
+        """ words_df = pd.DataFrame({'lyrics': set_words, 'year': set_years})
+        print(words_df.value_counts())
+        data_cv = pd.DataFrame(text_cv.to_frame())
+        data_cv.insert(loc = 1, value=set_years, column='year')
+        print(data_cv)"""
     words_df = pd.DataFrame({'lyrics': set_words, 'year': set_years})
+    words_df = words_df.value_counts()
+
+    words_df = words_df.to_frame().reset_index()
+    print(words_df.convert_dtypes())
+
+    #print(words_df[value)
+    #words_df = words_df.rename(columns={'index': 'lyrics', 0: 'year', 1: 'Occurence'})
+    #words_df = words_df.to_frame().reset_index(level=0).rename(columns={'index': 'lyrics'})
+    #words_df = words_df.rename_axis(columns='')
+
     # count the frequency of each word that aren't on the stop_words
     file = open('stopwords.txt', 'r')
-    #stop_words = (file.read().replace("\n",',')).split(',')
-    cv = CountVectorizer() # Create a dataframe called data_cv to store the the number of times the word was used in  a lyric based their decade
-    text_cv = cv.fit_transform(words_df['lyrics'].iloc[:])
+    stop_words = (file.read().split('\n'))
+    #cv = CountVectorizer(stop_words) # Create a dataframe called data_cv to store the the number of times the word was used in  a lyric based their decade
+    #text_cv = cv.fit_transform(words_df['lyrics'].iloc[:])
 
-    data_cv = pd.DataFrame(text_cv.toarray(), columns=cv.get_feature_names())
-    data_cv['year'] = words_df['year']
+    #print(text_cv)
+    #text_cv = words_df['lyrics'].value_counts()
 
-    vect_words = data_cv.groupby('year').sum().T
+    #data_cv = text_cv.to_frame()
+    #data_cv = pd.DataFrame(text_cv.toarray(), columns=cv.get_feature_names())
+    #data_cv['year'] = words_df['year']
 
-    vect_words = vect_words.reset_index(level=0).rename(columns={'index': 'lyrics'})
-    vect_words = vect_words.rename_axis(columns='')
+    #print(data_cv)
+    #vect_words = data_cv.groupby('year').sum().T
 
-    vect_words.to_csv('words.csv', index=False)
-    return vect_words
+    #vect_words = vect_words.reset_index(level=0).rename(columns={'index': 'lyrics'})
+    #vect_words = vect_words.rename_axis(columns='')
+
+    #vect_words.to_csv('words.csv', index=False)
+    return words_df
 
 
 def plot_wordcloud(df, row, col):
@@ -232,15 +254,15 @@ def plot_wordcloud(df, row, col):
     wc = WordCloud(background_color="white", colormap="Dark2",
                    max_font_size=100, random_state=15)
 
-    plt.figure(figsize=(20, 10))
 
-    for index, value in enumerate(df.columns[1:]):
+    plt.figure(figsize=(20, 10))
+    for index, value in enumerate(df.columns[2:]):
         top_dict = (dict(zip(df['lyrics'].tolist(), df[value].tolist())))
         wc.generate_from_frequencies(top_dict)
         plt.subplot(row, col, index + 1)
         plt.imshow(wc, interpolation="bilinear")
         plt.axis("off")
-        plt.title(df.columns[index+1], fontsize=15)
+        plt.title(df['year'][0], fontsize=15)
 
     plt.subplots_adjust(wspace=0.1, hspace=0.1)
 
