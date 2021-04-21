@@ -43,7 +43,6 @@ def search_data(access_token,genre,year):
         for x in range(len(year)):
             charts = get_charts(genre, dates=get_dates_by_month(int(year[x])))
             top_songs = get_n_most_frequent_entries(charts, 100)
-
             for song in top_songs:
                 if song is not None:
                     s = song.split(',')
@@ -195,7 +194,6 @@ def get_n_most_frequent_entries(charts, n):
     l.reverse()
 
     return [title for title, freq in l[:n]]
-
 
 
 def count(t):

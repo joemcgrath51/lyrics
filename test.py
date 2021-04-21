@@ -17,50 +17,60 @@ import helpers
 
 
 def main():
-    y = ['2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011',
-        '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020']
-    genre = 'hot-r-and-and-b-hip-hop-songs'
+    #y = ['2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011',
+    y = ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020']
+    genre = 'hot-rap-songs'
     g = 'QfcNFORWYYHMb2l48a95UsfzXqNTjnbJZkn3TZZ6HTquOw58d7JQdERD8VnOa71y'
     directory = '/home/joe/Desktop/lyrics/'
     h = Genius(g)
 
     createFolders(y)
+    test = 'r-b-hip-hop-songs'
+
+    #charts = helpers.get_charts(test, dates=helpers.get_dates_by_month(1990))
+    #n = helpers.get_n_most_frequent_entries(charts, 5)
+
+    #for x in range(len(n)):
+    #    temp = h.search_song(title=n[x])
+    #    print(temp)
+
+
 
     for i in range(len(y)):
+        try:
+            dir = directory + y[i]
+            r = billboard.ChartData(genre, date=None, year=y[i], fetch=False)
 
-        dir = directory + y[i]
-        r = billboard.ChartData(genre, date=None, year=y[i], fetch=False)
+            r.fetchEntries()
+            for x in range(len(r)):
+                if ',' in r[x].artist:
+                    r[x].artist = r[x].artist.split(',')[0]
 
-        r.fetchEntries()
-        for x in range(len(r)):
-            if ',' in r[x].artist:
-                r[x].artist = r[x].artist.split(',')[0]
+                if '/' in r[x].title:
+                    r[x].title = r[x].title.replace('/', '')
 
-            if '/' in r[x].title:
-                r[x].title = r[x].title.replace('/', '')
+                if '*' in r[x].title:   # Couldn't find how to remove profanity filter
+                    continue
 
-            if '*' in r[x].title:   # Couldn't find how to remove profanity filter
-                continue
+                if '(' in r[x].title:
+                    r[x].title = r[x].title.split('(')[0].rstrip()
 
-            if '(' in r[x].title:
-                r[x].title = r[x].title.split('(')[0].rstrip()
+                if 'Featuring' in r[x].artist:
+                    r[x].artist = r[x].artist.split('Featuring')
 
-            if 'Featuring' in r[x].artist:
-                r[x].artist = r[x].artist.split('Featuring')
+                if os.path.exists(dir + '/' + r[x].title + '.json'):
+                    continue
 
-            if os.path.exists(dir + '/' + r[x].title + '.json'):
-                continue
+                s = h.search_song(r[x].title, artist=r[x].artist[0])
+                l = 0
 
-            s = h.search_song(r[x].title, artist=r[x].artist[0])
-            l = 0
+                while s is None:
+                    l =+ 1
+                    s = h.search_song(r[x].title, artist=r[x].artist[l])
+                    if l > len(r[x].artist):
+                        break
 
-            while s is None:
-                l =+ 1
-                s = h.search_song(r[x].title, artist=r[x].artist[l])
-                if l > len(r[x].artist):
-                    break
-
-            s.save_lyrics(filename=r[x].title, full_data=False, dic=dir, overwrite=True)
+                s.save_lyrics(filename=r[x].title, full_data=False, dic=dir, overwrite=True)
 
     df = readFiles(directory, y)
 
@@ -83,7 +93,7 @@ def main():
 
         wc.append(WordCloud(background_color="white", max_font_size=300, collocations=True, stopwords=STOPWORDS))
         wc[x].generate(str(years[x]))
-        plt.subplot(2, 5, j).set_title(y[x])
+        plt.subplot(4, 5, j).set_title(y[x])
         plt.plot()
         plt.imshow(wc[x], interpolation='bilInear')
         plt.axis('off')
