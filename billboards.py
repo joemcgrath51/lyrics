@@ -22,6 +22,8 @@ def main():
     y = ['1990', '1991', '1992', '1993', '1994', '1995',
          '1996', '1997', '1998', '1999', '2000', '2001']
 
+    y = ['1997', '1998']
+
     genre = 'hot-rap-songs'
     g = 'QfcNFORWYYHMb2l48a95UsfzXqNTjnbJZkn3TZZ6HTquOw58d7JQdERD8VnOa71y'
     directory = '/home/joe/Desktop/lyrics/'
@@ -39,27 +41,62 @@ def main():
 
         for x in range(len(n)):
             name = n[x].split(",")[0]
+            artist = n[x].split(",")[1]
 
-            if '/' in name:
-                n[x] = name.replace('/', ' ').rstrip()
+            print(name)
+            print(artist)
 
-            if '(' in name:
-                n[x] = name.split('(')[0].rstrip()
+            if "With" in artist:
+                artist = artist.split("With")[0].rstrip()
 
             if not os.path.exists(dir + '/' + name + '.json'):
-                r = h.search_song(title=n[x])
+
+                if '/' in name:
+
+                    name = name.split('/')[0].rstrip()
+                    r = h.search_song(title=name, artist=artist)
+
+                    if r is None:
+                        r = h.search_song(title=n[x].split(",")[0].split('/')[1].rstrip(), artist=artist)
+                        print(r)
+                        r.save_lyrics(filename=n[x].split(",")[0].split('/')[1].rstrip(), full_data=False, dic=dir,
+                                      overwrite=True)
+                        continue
+
+                    if r.artist != artist:
+                        r = h.search_song(title=n[x].split(",")[0], artist=artist)
+                        print(r)
+                        r.save_lyrics(filename=n[x].split(",")[0], full_data=False, dic=dir, overwrite=True)
+                        continue
+                    print(r)
+
+                    r.save_lyrics(filename=name, full_data=False, dic=dir, overwrite=True)
+                    continue
+
+                if '(' in name:
+
+                    name = name.split('(')[0].rstrip()
+                    r = h.search_song(title=name, artist=artist)
+                    print(r)
+                    if r is None or r.artist != artist:
+                        r = h.search_song(title=n[x].split(",")[0], artist=artist)
+                        print(r)
+                        if r is None:
+                            continue
+                        r.save_lyrics(filename=n[x].split(",")[0], full_data=False, dic=dir, overwrite=True)
+                        continue
+                    print(r)
+
+                    r.save_lyrics(filename=name, full_data=False, dic=dir, overwrite=True)
+                    continue
+
+                r = h.search_song(title=name, artist=artist)
 
                 if r is None:
-                    r = h.search_song(title=name, artist=n[x].split(",")[1])
-                    if r is None:
-                        continue
-                    if name not in r.title:
-                        continue
+                    continue
+                print(r)
 
-                print(name.lower())
-                print(r.title.lower())
-                if r.title.lower() in name.lower():
-                    r.save_lyrics(filename=n[x].split(",")[0], full_data=False, dic=dir, overwrite=True)
+                r.save_lyrics(filename=n[x].split(",")[0], full_data=False, dic=dir, overwrite=True)
 
     df = readFiles(directory, y)
 
