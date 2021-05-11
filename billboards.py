@@ -17,87 +17,55 @@ import helpers
 
 
 def main():
-    # y = ['2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011',
-    y = ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020']
+
     y = ['1990', '1991', '1992', '1993', '1994', '1995',
-         '1996', '1997', '1998', '1999', '2000', '2001']
+         '1996', '1997', '1998', '1999', '2000', '2001',
+         '2002', '2003', '2004', '2005', '2006', '2007',
+         '2008', '2009', '2010', '2011', '2012', '2013',
+         '2014', '2015', '2016', '2017', '2018', '2019',
+         '2020']
 
-    y = ['1997', '1998']
-
-    genre = 'hot-rap-songs'
     g = 'QfcNFORWYYHMb2l48a95UsfzXqNTjnbJZkn3TZZ6HTquOw58d7JQdERD8VnOa71y'
     directory = '/home/joe/Desktop/lyrics/'
     h = Genius(g)
 
     createFolders(y)
-    test = 'r-b-hip-hop-songs'
-
+    genre = 'r-b-hip-hop-songs'
+    #"""
     for i in range(len(y)):
 
+        count = 0
         dir = directory + y[i]
 
-        charts = helpers.get_charts(test, dates=helpers.get_dates_by_month(int(y[i])))
+        charts = helpers.get_charts(genre, dates=helpers.get_dates_by_month(int(y[i])))
         n = helpers.get_n_most_frequent_entries(charts, 100)
 
         for x in range(len(n)):
+
             name = n[x].split(",")[0]
-            artist = n[x].split(",")[1]
 
-            print(name)
-            print(artist)
-
-            if "With" in artist:
-                artist = artist.split("With")[0].rstrip()
+            if "'" in name:
+                name = name.replace("'", "’")
 
             if not os.path.exists(dir + '/' + name + '.json'):
-
-                if '/' in name:
-
-                    name = name.split('/')[0].rstrip()
-                    r = h.search_song(title=name, artist=artist)
-
-                    if r is None:
-                        r = h.search_song(title=n[x].split(",")[0].split('/')[1].rstrip(), artist=artist)
-                        print(r)
-                        r.save_lyrics(filename=n[x].split(",")[0].split('/')[1].rstrip(), full_data=False, dic=dir,
-                                      overwrite=True)
-                        continue
-
-                    if r.artist != artist:
-                        r = h.search_song(title=n[x].split(",")[0], artist=artist)
-                        print(r)
-                        r.save_lyrics(filename=n[x].split(",")[0], full_data=False, dic=dir, overwrite=True)
-                        continue
-                    print(r)
-
-                    r.save_lyrics(filename=name, full_data=False, dic=dir, overwrite=True)
-                    continue
-
-                if '(' in name:
-
-                    name = name.split('(')[0].rstrip()
-                    r = h.search_song(title=name, artist=artist)
-                    print(r)
-                    if r is None or r.artist != artist:
-                        r = h.search_song(title=n[x].split(",")[0], artist=artist)
-                        print(r)
-                        if r is None:
-                            continue
-                        r.save_lyrics(filename=n[x].split(",")[0], full_data=False, dic=dir, overwrite=True)
-                        continue
-                    print(r)
-
-                    r.save_lyrics(filename=name, full_data=False, dic=dir, overwrite=True)
-                    continue
-
-                r = h.search_song(title=name, artist=artist)
+                r = h.search_song(n[x])
 
                 if r is None:
                     continue
-                print(r)
 
-                r.save_lyrics(filename=n[x].split(",")[0], full_data=False, dic=dir, overwrite=True)
+                print(r.title)
+                print(name)
+                print(r.title.lower() not in name.lower())
 
+                if r.title.lower() not in name.lower():
+                    continue
+
+                if "/" in name:
+                    name = name.replace("/", " ")
+
+                r.save_lyrics(filename=name, full_data=False, dic=dir,
+                              overwrite=True)
+    #"""
     df = readFiles(directory, y)
 
     years = []
@@ -109,7 +77,7 @@ def main():
 
     plt.figure()
     wc = []
-    stop_words = ['im', 'got', 'yeah']
+    stop_words = ['im', 'got', 'yeah', 'na']
 
     STOPWORDS.update(stop_words)
 
