@@ -1,0 +1,43 @@
+{
+ "_type": "song",
+ "annotation_count": 2,
+ "api_path": "/songs/33009",
+ "full_title": "Why Me Baby by\u00a0Keith\u00a0Sweat (Ft.\u00a0LL\u00a0Cool J)",
+ "header_image_thumbnail_url": "https://images.genius.com/0cce604fb6e735c15ae74c907607e491.220x219x1.jpg",
+ "header_image_url": "https://images.genius.com/0cce604fb6e735c15ae74c907607e491.220x219x1.jpg",
+ "id": 33009,
+ "instrumental": false,
+ "lyrics_owner_id": 50,
+ "lyrics_state": "complete",
+ "lyrics_updated_at": 1528553529,
+ "path": "/Keith-sweat-why-me-baby-lyrics",
+ "pyongs_count": 1,
+ "song_art_image_thumbnail_url": "https://images.genius.com/0cce604fb6e735c15ae74c907607e491.220x219x1.jpg",
+ "song_art_image_url": "https://images.genius.com/0cce604fb6e735c15ae74c907607e491.220x219x1.jpg",
+ "stats": {
+  "unreviewed_annotations": 0,
+  "hot": false
+ },
+ "title": "Why Me Baby",
+ "title_with_featured": "Why Me Baby (Ft.\u00a0LL\u00a0Cool J)",
+ "updated_by_human_at": 1588947015,
+ "url": "https://genius.com/Keith-sweat-why-me-baby-lyrics",
+ "song_art_primary_color": "#afb435",
+ "song_art_secondary_color": "#dcecfc",
+ "song_art_text_color": "#000",
+ "primary_artist": {
+  "_type": "artist",
+  "api_path": "/artists/3391",
+  "header_image_url": "https://images.genius.com/8712526ec3525337682bf1b71bc5b2e0.750x550x1.jpg",
+  "id": 3391,
+  "image_url": "https://images.genius.com/bdf66ad03e5ec16c39e8fa311814e74b.550x550x1.jpg",
+  "index_character": "k",
+  "is_meme_verified": false,
+  "is_verified": false,
+  "name": "Keith Sweat",
+  "slug": "Keith-sweat",
+  "url": "https://genius.com/artists/Keith-sweat"
+ },
+ "artist": "Keith Sweat",
+ "lyrics": "[Chorus: Keith Sweat]\n(Why, why me, baby) Girl, I need to know why\n(Why me, baby) What did I do, girl, what did I do\n(Why, why me, baby)\nYou broke my heart\n\n[Verse 1: LL Cool J]\nCheck this out, honey\nIt seems like 99 years have gone by\nSince the last time I talked to you, you know\nI never realized that somethin' so innocent and so sweet\nCould make a man feel so much pain\nTimes you'd jump out of my car\nAnd I'd chase you till I was out of breath\nGo to your job and pick you up\nBut you never showed up that day (Where were you baby)\nWhere were you, baby (Where were you)\nWho was you seein', it's a hurtin' feelin', sugar\nHow could you, why would you abuse my love, sweetheart\nCursin' me out in front of my friends\nAnd I could never do anything to you\nCause there was no way I could hurt somethin' (Nothing to you baby)\n(Nothing to you baby)\nI treasured so much\nThought I was right on time, but it seems like I was too late (No)\nYou hurt me, baby (No)\nBut hey, I'm man enough to admit it (No)\nWhat I wanna know is why (No baby)\n\n[Chorus: Keith Sweat]\n(Why, why me, baby) [Tell me why, baby, tell me why]\n(Why, why me, baby) Tell me, baby\n(Why, why me, baby) Tell me, baby\nYou broke my heart, baby [Check this out]\n(Why)\n\n[Verse 2: LL Cool J]\nYo, the way it happened was crazy (Umm)\nWe had a argument (Umm)\nI didn't see you for two or three days\nAnd then when I go to the movies to get you off my mind (Off my mind)\nI see you sittin' there holdin' hands with the next man\nCaught you on the phone a couple of times, but it was always your cousin\n(You lie) Step off, just a friend (You used to lie to me baby)\nPeople used to tell me, \"L, she was fakin'\"\nBut I couldn't see it, I was blinded by love (Got nothing on me baby)\nNothin' was too expensive\nNo night was too rainy\nI was always there for you (I did everything baby)\nI did things few call me a fool for doin'\nDroppin' your friends off, all that\nAll I wanted in return was your undivided attention and love\n(I need love baby)\nIf my heart had eyes it would cry\nYou're still in my world (Ooh you're still in my world)\nLife is worth livin' love\nTell me why\n\n[Chorus: Keith Sweat]\n(Why, why me, baby) Why would you do it to me, baby, yeah, yeah\n(Why, why me, baby) Hurt me so bad when you left me, baby\n(Why, why me, baby)\nYou broke myyyyy baby [Tell 'em what time it is, Keith]\n(Why) [Tell 'em what time it is]\n\n[Outro: Keith Sweat]\nI walk around talkin' to myself\nDo another day gets nothin'\nAm I goin' crazy, baby\nI look at the photograph that we once shared\nAnd think about the moment, yeah, yeah\nAbout each other\nRemember the things I used to say to you, girl\nThere's a right and a wrong way to love somebody\nI'll always give all my love to you\nI'm on a merry-go-round and round\nGirl, how deep is your love\nI've got to go outside in the rain\nIt's not to late too make it last forever\nWhy, why, why, why me\nWhy, why, why, why me\nNo, baby, no, baby, no, baby, no, baby, no, baby\nNo, no, no, no, no\nTell me not true\nOoh, do you know, do you know how much I love you\nYou were my woman and I was your man\nOh, girl, I'll never, never, never, never, never, never understand"
+}
