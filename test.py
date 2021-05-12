@@ -8,9 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import json
 
-import billboard
-
-from lyricsgenius import Genius, song
+from lyricsgenius import Genius
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import helpers
@@ -31,8 +29,8 @@ def main():
          '2020']"""
 
     g = 'QfcNFORWYYHMb2l48a95UsfzXqNTjnbJZkn3TZZ6HTquOw58d7JQdERD8VnOa71y'
-    #directory = '/home/joe/Desktop/lyrics/'
-    directory = 'D:\Downloads\\lyrics-main\\lyrics-main\\'
+    directory = '/home/joe/Desktop/lyrics/'
+    #directory = 'D:\Downloads\\lyrics-main\\lyrics-main\\'
     h = Genius(g)
 
     createFolders(y)
@@ -48,31 +46,41 @@ def main():
         for x in range(len(n)):
 
             name = n[x].split(",")[0]
+            artist = n[x].split(',')[1]
+            temp = name + ',' + artist
 
             if "'" in name:
                 name = name.replace("'", "’")
 
-            if not os.path.exists(dir + '/' + name + '.json'):
+            if not (os.path.exists(dir + '/' + name + '.json') or os.path.exists(dir + '/' + temp + '.json')):
                 r = h.search_song(n[x])
 
                 if r is None:
                     continue
 
-                print(r.title)
-                print(name)
-                print(r.title.lower() not in name.lower())
-
-                print(type(r))
                 if r.title.lower() not in name.lower():
+
+                    r = h.search_song(title=temp)
+                    if r is None:
+                        continue
+
+                    if r.title.lower() not in name.lower():
+                        continue
+
+                    if "/" in temp:
+                        temp = temp.replace("/", " ")
+
+                    r.save_lyrics(filename=temp, full_data=False, dic=dir,
+                                  overwrite=True)
                     continue
 
                 if "/" in name:
                     name = name.replace("/", " ")
 
-                #r.save_lyrics(filename=name, full_data=False, dic=dir,
-                              #overwrite=True)
-                r.save_lyrics(filename=name, dic=dir,
+                r.save_lyrics(filename=name, full_data=False, dic=dir,
                               overwrite=True)
+                #r.save_lyrics(filename=name, dic=dir,
+                #              overwrite=True)
     #"""
     df = readFiles(directory, y)
 
@@ -85,15 +93,28 @@ def main():
 
     plt.figure()
     wc = []
-    stop_words = ['im', 'got', 'yeah', 'na', 'oh', 'know', 'see']
+    stop_words = ['im', 'got', 'yeah', 'na',
+                  'oh', 'know', 'see', 'ayy',
+                  'way', 'aint', 'ill', 'cant',
+                  'want', 'let', 'say', 'back',
+                  'cause', 'gon', 'go', 'uh',
+                  'make', 'versace', 'put',
+                  'thoia', 'ya', 'hol']
 
     STOPWORDS.update(stop_words)
 
     for x in range(len(y)):
         j = x + 1
-        print(len(years[x]))
+        print(str(y[x]) + ": ", len(years[x]))
 
-        wc.append(WordCloud(background_color="white", max_font_size=300, collocations=True, stopwords=STOPWORDS))
+        wc.append(WordCloud(background_color="white",
+                            min_font_size=20,
+                            max_font_size=400,
+                            collocations=True,
+                            max_words=7,
+                            stopwords=STOPWORDS,
+                            contour_color='#5d0f24',
+                            contour_width=3))
         wc[x].generate(str(years[x]))
         plt.subplot(int(str(len(y))[:1]) * 2, 5, j).set_title(y[x])
 
