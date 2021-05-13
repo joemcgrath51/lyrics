@@ -18,7 +18,9 @@ stopwords = ['im', 'got', 'yeah', 'na',
              'cause', 'gon', 'go', 'uh',
              'make', 'versace', 'put',
              'thoia', 'ya', 'hol', 'thats',
-             'wanna']
+             'wanna', 'em', 'ooh', 'yo', 'choo',
+             'baby baby', 'baby', 'beat beat', 'beat',
+             'one', 'wake wake']
 
 # Add/Remove years you want displayed
 years = ['1991', '1992', '1993', '1994', '1995',
