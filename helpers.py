@@ -39,6 +39,7 @@ def lyrics_to_words(document):
     parameters:
     document: text to split to single words
     """
+
     stop_words = set(stopwords.words('english'))
     exclude = set(string.punctuation)
     lemma = WordNetLemmatizer()

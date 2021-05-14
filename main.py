@@ -19,8 +19,8 @@ stopwords = ['im', 'got', 'yeah', 'na',
              'make', 'versace', 'put',
              'thoia', 'ya', 'hol', 'thats',
              'wanna', 'em', 'ooh', 'yo', 'choo',
-             'baby baby', 'baby', 'beat beat', 'beat',
-             'one', 'wake wake']
+             'beat', 'youre', 'wa'
+             'one']
 
 # Add/Remove years you want displayed
 years = ['1991', '1992', '1993', '1994', '1995',
@@ -39,8 +39,8 @@ genre = 'r-b-hip-hop-songs'
 
 
 # Directory that the program is in
-# directory = '/home/joe/Desktop/lyrics/'                       # Linux format
-directory = "D:\\Users\Joe\Desktop\GitHub\lyrics\\"             # Windows format
+directory = '/home/joe/Desktop/lyrics/'                       # Linux format
+#directory = "D:\\Users\Joe\Desktop\GitHub\lyrics\\"             # Windows format
 
 
 def main():
@@ -132,18 +132,16 @@ def display(n):
     for x in range(len(years)):
         j = x + 1
         print(str(years[x]) + ": ", len(n[x]))
-
         wc.append(WordCloud(background_color="white",
                             min_font_size=10,
                             max_font_size=400,
-                            collocations=True,
+                            collocations=False,
                             max_words=10,
                             stopwords=STOPWORDS,
                             contour_color='#5d0f24',
                             contour_width=3))
         wc[x].generate(str(n[x]))
         plt.subplot(int(str(len(years))[:1]) * 2, 5, j).set_title(years[x])
-
         plt.plot()
         plt.imshow(wc[x], interpolation='bilinear')
         plt.axis('off')
