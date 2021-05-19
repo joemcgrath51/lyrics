@@ -13,14 +13,16 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # Add/Remove words you care about
 stopwords = ['im', 'got', 'yeah', 'na',
              'oh', 'know', 'see', 'ayy',
-             'way', 'aint', 'ill', 'cant',
-             'want', 'let', 'say', 'back',
+             'way', 'aint', 'ill', 'cant', 'cause',
+             'want', 'let', 'say', 'back', 'wanna',
              'cause', 'gon', 'go', 'uh',
-             'make', 'versace', 'put',
-             'thoia', 'ya', 'hol', 'thats',
+             'make', 'versace', 'put', 'hey',
+             'thoia', 'ya', 'hol', 'thats', 'dobalina',
              'wanna', 'em', 'ooh', 'yo', 'choo',
-             'beat', 'youre', 'wa'
-             'one']
+             'beat', 'youre', 'wa', 'feel', 'money',
+             'one', 'man', 'one', 'come', 'jump',
+             'gotta', 'hit', 'la', 'keep', 'give', 'yall',
+             'u', 'da', 'check', 'tell', 'said', 'time' 'ima', 'bwok']
 
 # Add/Remove years you want displayed
 years = ['1991', '1992', '1993', '1994', '1995',
@@ -31,11 +33,12 @@ years = ['1991', '1992', '1993', '1994', '1995',
          '2020']
 
 
+
 g_token = 'QfcNFORWYYHMb2l48a95UsfzXqNTjnbJZkn3TZZ6HTquOw58d7JQdERD8VnOa71y'
 genius_api = Genius(g_token)
 
 # Genre you care about, you'll need to delete all year folders before changing genre
-genre = 'r-b-hip-hop-songs'
+genre = 'rap-song'
 
 
 # Directory that the program is in
@@ -107,10 +110,10 @@ def get_songs():
 
                 if '?' in name:
                     name = name.replace("?", "")
-                print(dir+'\\'+name)
 
-                r.save_lyrics(filename=dir + '\\' + name,
-                              overwrite=True)
+                r.save_lyrics(filename=name,
+                              full_data=False,
+                              overwrite=True, dic=dir)
 
 
 def count(df):
